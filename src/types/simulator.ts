@@ -17,7 +17,6 @@ export type Table = {
 };
 
 export type StatusFilter =
-  | "all"
   | "arrived"
   | "not-arrived"
   | "unseated"
@@ -41,7 +40,8 @@ export type SimulatorExport = {
   filters: {
     searchQuery: string;
     genderFilter: GenderFilter;
-    statusFilter: StatusFilter;
+    statusFilters: StatusFilter[];
+    statusFilter?: StatusFilter | "all";
   };
   tableCapacityDraft: number;
 };

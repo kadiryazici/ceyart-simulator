@@ -9,7 +9,7 @@ type SimulatorState = {
   selectedPersonId: string | null;
   searchQuery: string;
   genderFilter: GenderFilter;
-  statusFilter: StatusFilter;
+  statusFilters: StatusFilter[];
   tableCapacityDraft: number;
   addPerson: (draft: PersonDraft) => void;
   addPeopleFromLines: (lines: string[]) => number;
@@ -26,7 +26,8 @@ type SimulatorState = {
   randomDistribute: () => number;
   setSearchQuery: (value: string) => void;
   setGenderFilter: (value: GenderFilter) => void;
-  setStatusFilter: (value: StatusFilter) => void;
+  toggleStatusFilter: (value: StatusFilter) => void;
+  clearStatusFilters: () => void;
   setTableCapacityDraft: (value: number) => void;
   exportState: () => SimulatorExport;
   importState: (payload: unknown) => boolean;
@@ -65,6 +66,15 @@ const normalizeTable = (table: Partial<Table>, index: number): Table => ({
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
+const validStatusFilters: StatusFilter[] = ["arrived", "not-arrived", "unseated", "spent", "not-spent"];
+
+const normalizeStatusFilters = (value: unknown): StatusFilter[] => {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is StatusFilter => validStatusFilters.includes(item as StatusFilter));
+  }
+  return validStatusFilters.includes(value as StatusFilter) ? [value as StatusFilter] : [];
+};
+
 const shuffle = <T,>(items: T[]) => {
   const shuffled = [...items];
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
@@ -82,7 +92,7 @@ export const useSimulatorStore = create<SimulatorState>()(
       selectedPersonId: null,
       searchQuery: "",
       genderFilter: "all",
-      statusFilter: "all",
+      statusFilters: [],
       tableCapacityDraft: 8,
       addPerson: ({ name, gender }) => {
         const cleanName = name.trim();
@@ -239,7 +249,13 @@ export const useSimulatorStore = create<SimulatorState>()(
       },
       setSearchQuery: (value) => set({ searchQuery: value }),
       setGenderFilter: (value) => set({ genderFilter: value }),
-      setStatusFilter: (value) => set({ statusFilter: value }),
+      toggleStatusFilter: (value) =>
+        set((state) => ({
+          statusFilters: state.statusFilters.includes(value)
+            ? state.statusFilters.filter((item) => item !== value)
+            : [...state.statusFilters, value],
+        })),
+      clearStatusFilters: () => set({ statusFilters: [] }),
       setTableCapacityDraft: (value) => set({ tableCapacityDraft: Math.max(1, value || 1) }),
       exportState: () => {
         const state = get();
@@ -253,7 +269,8 @@ export const useSimulatorStore = create<SimulatorState>()(
           filters: {
             searchQuery: state.searchQuery,
             genderFilter: state.genderFilter,
-            statusFilter: state.statusFilter,
+            statusFilters: state.statusFilters,
+            statusFilter: state.statusFilters[0] ?? "all",
           },
           tableCapacityDraft: state.tableCapacityDraft,
         };
@@ -268,7 +285,7 @@ export const useSimulatorStore = create<SimulatorState>()(
         const people = payload.people.map((person, index) => normalizePerson(isRecord(person) ? person : {}, index));
         const filters = isRecord(payload.filters) ? payload.filters : {};
         const genderFilter = String(filters.genderFilter ?? "all") as GenderFilter;
-        const statusFilter = String(filters.statusFilter ?? "all") as StatusFilter;
+        const statusFilters = normalizeStatusFilters(filters.statusFilters ?? filters.statusFilter);
         const selectedPersonId = typeof payload.selectedPersonId === "string" ? payload.selectedPersonId : null;
 
         set({
@@ -280,7 +297,7 @@ export const useSimulatorStore = create<SimulatorState>()(
           selectedPersonId: selectedPersonId && people.some((person) => person.id === selectedPersonId) ? selectedPersonId : null,
           searchQuery: typeof filters.searchQuery === "string" ? filters.searchQuery : "",
           genderFilter: ["all", "Kadın", "Erkek", "—"].includes(genderFilter) ? genderFilter : "all",
-          statusFilter: ["all", "arrived", "not-arrived", "unseated", "spent", "not-spent"].includes(statusFilter) ? statusFilter : "all",
+          statusFilters,
           tableCapacityDraft: Math.max(1, Number(payload.tableCapacityDraft) || 8),
         });
         return true;
@@ -292,7 +309,7 @@ export const useSimulatorStore = create<SimulatorState>()(
           selectedPersonId: null,
           searchQuery: "",
           genderFilter: "all",
-          statusFilter: "all",
+          statusFilters: [],
           tableCapacityDraft: 8,
         }),
     }),
@@ -305,9 +322,17 @@ export const useSimulatorStore = create<SimulatorState>()(
         selectedPersonId: state.selectedPersonId,
         searchQuery: state.searchQuery,
         genderFilter: state.genderFilter,
-        statusFilter: state.statusFilter,
+        statusFilters: state.statusFilters,
         tableCapacityDraft: state.tableCapacityDraft,
       }),
+      merge: (persisted, current) => {
+        if (!isRecord(persisted)) return current;
+        return {
+          ...current,
+          ...persisted,
+          statusFilters: normalizeStatusFilters(persisted.statusFilters ?? persisted.statusFilter),
+        };
+      },
     },
   ),
 );

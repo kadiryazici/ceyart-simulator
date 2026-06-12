@@ -5,7 +5,6 @@ import { PersonForm } from "../PersonForm/PersonForm";
 import { PersonRow } from "../PersonRow/PersonRow";
 
 const statusFilters: Array<{ label: string; value: StatusFilter }> = [
-  { label: "Tümü", value: "all" },
   { label: "Gelen", value: "arrived" },
   { label: "Gelmeyen", value: "not-arrived" },
   { label: "Masasız", value: "unseated" },
@@ -17,11 +16,12 @@ export function PeoplePanel() {
   const people = useSimulatorStore((state) => state.people);
   const searchQuery = useSimulatorStore((state) => state.searchQuery);
   const genderFilter = useSimulatorStore((state) => state.genderFilter);
-  const statusFilter = useSimulatorStore((state) => state.statusFilter);
+  const statusFiltersValue = useSimulatorStore((state) => state.statusFilters);
   const setSearchQuery = useSimulatorStore((state) => state.setSearchQuery);
   const setGenderFilter = useSimulatorStore((state) => state.setGenderFilter);
-  const setStatusFilter = useSimulatorStore((state) => state.setStatusFilter);
-  const filteredPeople = getFilteredPeople(people, searchQuery, genderFilter, statusFilter);
+  const toggleStatusFilter = useSimulatorStore((state) => state.toggleStatusFilter);
+  const clearStatusFilters = useSimulatorStore((state) => state.clearStatusFilters);
+  const filteredPeople = getFilteredPeople(people, searchQuery, genderFilter, statusFiltersValue);
 
   return (
     <aside className="rounded-lg border border-slate-200 bg-white shadow-lg lg:grid lg:min-h-0 lg:grid-rows-[auto_minmax(0,1fr)] lg:overflow-hidden">
@@ -41,12 +41,19 @@ export function PeoplePanel() {
         </div>
         <PersonForm />
         <div className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            className={!statusFiltersValue.length ? "segment-active" : "segment"}
+            onClick={clearStatusFilters}
+          >
+            Tümü
+          </button>
           {statusFilters.map((filter) => (
             <button
               key={filter.value}
               type="button"
-              className={filter.value === statusFilter ? "segment-active" : "segment"}
-              onClick={() => setStatusFilter(filter.value)}
+              className={statusFiltersValue.includes(filter.value) ? "segment-active" : "segment"}
+              onClick={() => toggleStatusFilter(filter.value)}
             >
               {filter.label}
             </button>
