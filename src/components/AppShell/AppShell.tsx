@@ -18,8 +18,8 @@ export function AppShell() {
   };
 
   return (
-    <main className="grid h-screen grid-rows-[auto_auto_minmax(0,1fr)] overflow-hidden bg-slate-100 px-4 py-5 text-slate-900">
-      <header className="mx-auto flex w-full max-w-[1540px] items-end justify-between gap-4 pb-4">
+    <main className="min-h-screen overflow-y-auto bg-slate-100 px-4 py-5 text-slate-900 lg:grid lg:h-screen lg:grid-rows-[auto_auto_minmax(0,1fr)] lg:overflow-hidden">
+      <header className="mx-auto flex w-full max-w-[1540px] items-end justify-between gap-4 pb-4 max-md:flex-col max-md:items-start">
         <div>
           <h1 className="text-3xl font-bold leading-tight">Ceyart Simulator</h1>
           <p className="mt-1 text-sm font-medium text-slate-500">Kişileri ekle, geliş ve harcama durumunu takip et, masalara yerleştir.</p>
@@ -40,7 +40,7 @@ export function AppShell() {
         </div>
       </header>
       <StatsBar />
-      <section className="mx-auto grid min-h-0 w-full max-w-[1540px] grid-cols-[minmax(360px,450px)_1fr] gap-4 max-lg:grid-cols-1 max-lg:overflow-auto">
+      <section className="mx-auto grid w-full max-w-[1540px] gap-4 lg:min-h-0 lg:grid-cols-[minmax(360px,450px)_1fr]">
         <PeoplePanel />
         <TablesPanel />
       </section>

@@ -19,7 +19,7 @@ export function TablesPanel() {
   };
 
   return (
-    <section className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg">
+    <section className="rounded-lg border border-slate-200 bg-white shadow-lg lg:grid lg:min-h-0 lg:grid-rows-[auto_minmax(0,1fr)] lg:overflow-hidden">
       <div className="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-slate-200 bg-slate-50 p-3 max-md:grid-cols-1">
         <div className="min-w-0">
           <div className="font-bold">Masalar</div>
@@ -39,7 +39,7 @@ export function TablesPanel() {
           <button type="button" className="btn-primary" onClick={addTable}>Masa ekle</button>
         </div>
       </div>
-      <div className="grid min-h-0 auto-rows-[clamp(380px,54vh,620px)] grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-3 overflow-auto p-3">
+      <div className="grid auto-rows-[clamp(380px,54vh,620px)] grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-3 p-3 lg:min-h-0 lg:overflow-auto">
         {tables.map((table) => <TableCard key={table.id} table={table} />)}
       </div>
     </section>

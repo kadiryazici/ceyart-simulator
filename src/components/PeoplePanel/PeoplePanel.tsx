@@ -24,7 +24,7 @@ export function PeoplePanel() {
   const filteredPeople = getFilteredPeople(people, searchQuery, genderFilter, statusFilter);
 
   return (
-    <aside className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg">
+    <aside className="rounded-lg border border-slate-200 bg-white shadow-lg lg:grid lg:min-h-0 lg:grid-rows-[auto_minmax(0,1fr)] lg:overflow-hidden">
       <div className="grid gap-3 border-b border-slate-200 bg-slate-50 p-3">
         <div className="flex min-h-8 items-center justify-between gap-3 font-bold">
           <span>Kişiler</span>
@@ -53,7 +53,7 @@ export function PeoplePanel() {
           ))}
         </div>
       </div>
-      <div className="min-h-0 overflow-auto p-2">
+      <div className="p-2 lg:min-h-0 lg:overflow-auto">
         {filteredPeople.length ? (
           filteredPeople.map((person) => <PersonRow key={person.id} person={person} />)
         ) : (
