@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { defaultTables } from "../lib/defaults";
-import type { Gender, GenderFilter, Person, PersonDraft, StatusFilter, Table } from "../types/simulator";
+import type { Gender, GenderFilter, Person, PersonDraft, SimulatorExport, StatusFilter, Table } from "../types/simulator";
 
 type SimulatorState = {
   people: Person[];
@@ -28,6 +28,8 @@ type SimulatorState = {
   setGenderFilter: (value: GenderFilter) => void;
   setStatusFilter: (value: StatusFilter) => void;
   setTableCapacityDraft: (value: number) => void;
+  exportState: () => SimulatorExport;
+  importState: (payload: unknown) => boolean;
   resetAll: () => void;
 };
 
@@ -43,6 +45,25 @@ const nextPersonNumber = (people: Person[]) =>
 
 const tablePeople = (people: Person[], tableId: string) =>
   people.filter((person) => person.tableId === tableId);
+
+const normalizePerson = (person: Partial<Person>, index: number): Person => ({
+  id: typeof person.id === "string" && person.id ? person.id : crypto.randomUUID(),
+  number: Number(person.number) || index + 1,
+  name: typeof person.name === "string" && person.name.trim() ? person.name.trim() : "İsimsiz",
+  gender: normalizeGender(String(person.gender ?? "—")),
+  arrived: Boolean(person.arrived),
+  spent: Boolean(person.spent),
+  tableId: typeof person.tableId === "string" && person.tableId ? person.tableId : null,
+});
+
+const normalizeTable = (table: Partial<Table>, index: number): Table => ({
+  id: typeof table.id === "string" && table.id ? table.id : `t${index + 1}`,
+  name: typeof table.name === "string" && table.name.trim() ? table.name.trim() : `Masa ${index + 1}`,
+  capacity: Math.max(1, Number(table.capacity) || 8),
+});
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
 
 const shuffle = <T,>(items: T[]) => {
   const shuffled = [...items];
@@ -220,6 +241,50 @@ export const useSimulatorStore = create<SimulatorState>()(
       setGenderFilter: (value) => set({ genderFilter: value }),
       setStatusFilter: (value) => set({ statusFilter: value }),
       setTableCapacityDraft: (value) => set({ tableCapacityDraft: Math.max(1, value || 1) }),
+      exportState: () => {
+        const state = get();
+        return {
+          app: "ceyart-simulator",
+          schemaVersion: 1,
+          exportedAt: new Date().toISOString(),
+          people: state.people,
+          tables: state.tables,
+          selectedPersonId: state.selectedPersonId,
+          filters: {
+            searchQuery: state.searchQuery,
+            genderFilter: state.genderFilter,
+            statusFilter: state.statusFilter,
+          },
+          tableCapacityDraft: state.tableCapacityDraft,
+        };
+      },
+      importState: (payload) => {
+        if (!isRecord(payload) || !Array.isArray(payload.people) || !Array.isArray(payload.tables)) {
+          return false;
+        }
+
+        const tables = payload.tables.map((table, index) => normalizeTable(isRecord(table) ? table : {}, index));
+        const tableIds = new Set(tables.map((table) => table.id));
+        const people = payload.people.map((person, index) => normalizePerson(isRecord(person) ? person : {}, index));
+        const filters = isRecord(payload.filters) ? payload.filters : {};
+        const genderFilter = String(filters.genderFilter ?? "all") as GenderFilter;
+        const statusFilter = String(filters.statusFilter ?? "all") as StatusFilter;
+        const selectedPersonId = typeof payload.selectedPersonId === "string" ? payload.selectedPersonId : null;
+
+        set({
+          people: people.map((person) => ({
+            ...person,
+            tableId: person.tableId && tableIds.has(person.tableId) ? person.tableId : null,
+          })),
+          tables: tables.length ? tables : defaultTables,
+          selectedPersonId: selectedPersonId && people.some((person) => person.id === selectedPersonId) ? selectedPersonId : null,
+          searchQuery: typeof filters.searchQuery === "string" ? filters.searchQuery : "",
+          genderFilter: ["all", "Kadın", "Erkek", "—"].includes(genderFilter) ? genderFilter : "all",
+          statusFilter: ["all", "arrived", "not-arrived", "unseated", "spent", "not-spent"].includes(statusFilter) ? statusFilter : "all",
+          tableCapacityDraft: Math.max(1, Number(payload.tableCapacityDraft) || 8),
+        });
+        return true;
+      },
       resetAll: () =>
         set({
           people: [],

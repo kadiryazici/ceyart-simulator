@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BulkAddModal } from "../BulkAddModal/BulkAddModal";
+import { DataTransferModal } from "../DataTransferModal/DataTransferModal";
 import { PeoplePanel } from "../PeoplePanel/PeoplePanel";
 import { StatsBar } from "../StatsBar/StatsBar";
 import { TablesPanel } from "../TablesPanel/TablesPanel";
@@ -8,6 +9,7 @@ import { useSimulatorStore } from "../../store/simulatorStore";
 export function AppShell() {
   const resetAll = useSimulatorStore((state) => state.resetAll);
   const [isBulkAddOpen, setIsBulkAddOpen] = useState(false);
+  const [transferMode, setTransferMode] = useState<"export" | "import" | null>(null);
 
   const handleReset = () => {
     if (window.confirm("Tüm kişiler ve masa yerleşimi sıfırlansın mı?")) {
@@ -23,6 +25,12 @@ export function AppShell() {
           <p className="mt-1 text-sm font-medium text-slate-500">Kişileri ekle, geliş ve harcama durumunu takip et, masalara yerleştir.</p>
         </div>
         <div className="flex flex-wrap justify-end gap-2">
+          <button type="button" className="btn" onClick={() => setTransferMode("export")}>
+            Dışa aktar
+          </button>
+          <button type="button" className="btn" onClick={() => setTransferMode("import")}>
+            İçe aktar
+          </button>
           <button type="button" className="btn" onClick={() => setIsBulkAddOpen(true)}>
             Listeden ekle
           </button>
@@ -37,6 +45,7 @@ export function AppShell() {
         <TablesPanel />
       </section>
       {isBulkAddOpen ? <BulkAddModal onClose={() => setIsBulkAddOpen(false)} /> : null}
+      {transferMode ? <DataTransferModal mode={transferMode} onClose={() => setTransferMode(null)} /> : null}
     </main>
   );
 }

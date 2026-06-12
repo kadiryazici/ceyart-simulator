@@ -30,3 +30,18 @@ export type PersonDraft = {
   name: string;
   gender: Gender;
 };
+
+export type SimulatorExport = {
+  app: "ceyart-simulator";
+  schemaVersion: 1;
+  exportedAt: string;
+  people: Person[];
+  tables: Table[];
+  selectedPersonId: string | null;
+  filters: {
+    searchQuery: string;
+    genderFilter: GenderFilter;
+    statusFilter: StatusFilter;
+  };
+  tableCapacityDraft: number;
+};
