@@ -41,6 +41,27 @@ const normalizeGender = (gender: string): Gender => {
   return "—";
 };
 
+const normalizeBulkGender = (gender: string): Gender => {
+  const value = gender.trim().toLocaleLowerCase("tr-TR");
+  if (["kadın", "kadin", "k"].includes(value)) return "Kadın";
+  if (["erkek", "e"].includes(value)) return "Erkek";
+  return normalizeGender(gender.trim());
+};
+
+const parseBulkPersonLine = (line: string): PersonDraft | null => {
+  const cleanLine = line.trim();
+  if (!cleanLine) return null;
+
+  const [rawName, ...genderParts] = cleanLine.split(/\s+-\s+/);
+  const name = rawName.trim();
+  if (!name) return null;
+
+  return {
+    name,
+    gender: genderParts.length ? normalizeBulkGender(genderParts.join(" - ")) : "—",
+  };
+};
+
 const nextPersonNumber = (people: Person[]) =>
   people.reduce((max, person) => Math.max(max, Number(person.number) || 0), 0) + 1;
 
@@ -116,15 +137,15 @@ export const useSimulatorStore = create<SimulatorState>()(
         });
       },
       addPeopleFromLines: (lines) => {
-        const names = lines.map((line) => line.trim()).filter(Boolean);
-        if (!names.length) return 0;
+        const drafts = lines.map(parseBulkPersonLine).filter((draft): draft is PersonDraft => Boolean(draft));
+        if (!drafts.length) return 0;
         set((state) => {
           const startNumber = nextPersonNumber(state.people);
-          const peopleToAdd = names.map((name, index) => ({
+          const peopleToAdd = drafts.map((draft, index) => ({
             id: crypto.randomUUID(),
             number: startNumber + index,
-            name,
-            gender: "—" as const,
+            name: draft.name,
+            gender: draft.gender,
             arrived: false,
             spent: false,
             tableId: null,
@@ -133,7 +154,7 @@ export const useSimulatorStore = create<SimulatorState>()(
             people: [...state.people, ...peopleToAdd],
           };
         });
-        return names.length;
+        return drafts.length;
       },
       updatePerson: (personId, { name, gender }) => {
         const cleanName = name.trim();
