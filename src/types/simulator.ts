@@ -6,22 +6,18 @@ export type Person = {
   name: string;
   gender: Gender;
   arrived: boolean;
-  spent: boolean;
   tableId: string | null;
 };
 
 export type Table = {
   id: string;
   name: string;
-  capacity: number;
 };
 
 export type StatusFilter =
   | "arrived"
   | "not-arrived"
-  | "unseated"
-  | "spent"
-  | "not-spent";
+  | "unseated";
 
 export type GenderFilter = Gender | "all";
 
@@ -43,5 +39,4 @@ export type SimulatorExport = {
     statusFilters: StatusFilter[];
     statusFilter?: StatusFilter | "all";
   };
-  tableCapacityDraft: number;
 };

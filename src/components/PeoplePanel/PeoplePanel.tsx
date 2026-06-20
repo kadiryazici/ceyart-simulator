@@ -8,8 +8,6 @@ const statusFilters: Array<{ label: string; value: StatusFilter }> = [
   { label: "Gelen", value: "arrived" },
   { label: "Gelmeyen", value: "not-arrived" },
   { label: "Masasız", value: "unseated" },
-  { label: "Harcayan", value: "spent" },
-  { label: "Harcamayan", value: "not-spent" },
 ];
 
 export function PeoplePanel() {
@@ -24,8 +22,8 @@ export function PeoplePanel() {
   const filteredPeople = getFilteredPeople(people, searchQuery, genderFilter, statusFiltersValue);
 
   return (
-    <aside className="rounded-lg border border-slate-200 bg-white shadow-lg lg:grid lg:min-h-0 lg:grid-rows-[auto_minmax(0,1fr)] lg:overflow-hidden">
-      <div className="grid gap-3 border-b border-slate-200 bg-slate-50 p-3">
+    <aside className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] border-r border-slate-200 bg-white lg:h-screen lg:overflow-hidden">
+      <div className="grid gap-3 border-b border-slate-200 bg-white p-4">
         <div className="flex min-h-8 items-center justify-between gap-3 font-bold">
           <span>Kişiler</span>
           <span className="rounded-full bg-slate-200 px-3 py-1 text-xs">{filteredPeople.length}</span>
@@ -40,7 +38,7 @@ export function PeoplePanel() {
           </select>
         </div>
         <PersonForm />
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <button
             type="button"
             className={!statusFiltersValue.length ? "segment-active" : "segment"}

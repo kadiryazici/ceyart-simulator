@@ -17,8 +17,6 @@ export const getFilteredPeople = (
       if (statusFilter === "arrived") return person.arrived;
       if (statusFilter === "not-arrived") return !person.arrived;
       if (statusFilter === "unseated") return !person.tableId;
-      if (statusFilter === "spent") return person.spent;
-      if (statusFilter === "not-spent") return !person.spent;
       return true;
     });
 

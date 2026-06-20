@@ -10,13 +10,11 @@ type SimulatorState = {
   searchQuery: string;
   genderFilter: GenderFilter;
   statusFilters: StatusFilter[];
-  tableCapacityDraft: number;
   addPerson: (draft: PersonDraft) => void;
   addPeopleFromLines: (lines: string[]) => number;
   updatePerson: (personId: string, draft: PersonDraft) => void;
   deletePerson: (personId: string) => void;
   toggleArrived: (personId: string) => void;
-  toggleSpent: (personId: string) => void;
   selectPerson: (personId: string) => void;
   seatPerson: (personId: string, tableId: string) => boolean;
   removeFromTable: (personId: string) => void;
@@ -28,7 +26,6 @@ type SimulatorState = {
   setGenderFilter: (value: GenderFilter) => void;
   toggleStatusFilter: (value: StatusFilter) => void;
   clearStatusFilters: () => void;
-  setTableCapacityDraft: (value: number) => void;
   exportState: () => SimulatorExport;
   importState: (payload: unknown) => boolean;
   resetAll: () => void;
@@ -65,29 +62,24 @@ const parseBulkPersonLine = (line: string): PersonDraft | null => {
 const nextPersonNumber = (people: Person[]) =>
   people.reduce((max, person) => Math.max(max, Number(person.number) || 0), 0) + 1;
 
-const tablePeople = (people: Person[], tableId: string) =>
-  people.filter((person) => person.tableId === tableId);
-
 const normalizePerson = (person: Partial<Person>, index: number): Person => ({
   id: typeof person.id === "string" && person.id ? person.id : crypto.randomUUID(),
   number: Number(person.number) || index + 1,
   name: typeof person.name === "string" && person.name.trim() ? person.name.trim() : "İsimsiz",
   gender: normalizeGender(String(person.gender ?? "—")),
   arrived: Boolean(person.arrived),
-  spent: Boolean(person.spent),
   tableId: typeof person.tableId === "string" && person.tableId ? person.tableId : null,
 });
 
 const normalizeTable = (table: Partial<Table>, index: number): Table => ({
   id: typeof table.id === "string" && table.id ? table.id : `t${index + 1}`,
   name: typeof table.name === "string" && table.name.trim() ? table.name.trim() : `Masa ${index + 1}`,
-  capacity: Math.max(1, Number(table.capacity) || 8),
 });
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
-const validStatusFilters: StatusFilter[] = ["arrived", "not-arrived", "unseated", "spent", "not-spent"];
+const validStatusFilters: StatusFilter[] = ["arrived", "not-arrived", "unseated"];
 
 const normalizeStatusFilters = (value: unknown): StatusFilter[] => {
   if (Array.isArray(value)) {
@@ -114,7 +106,6 @@ export const useSimulatorStore = create<SimulatorState>()(
       searchQuery: "",
       genderFilter: "all",
       statusFilters: [],
-      tableCapacityDraft: 8,
       addPerson: ({ name, gender }) => {
         const cleanName = name.trim();
         if (!cleanName) return;
@@ -129,7 +120,6 @@ export const useSimulatorStore = create<SimulatorState>()(
                 name: cleanName,
                 gender: normalizeGender(gender),
                 arrived: false,
-                spent: false,
                 tableId: null,
               },
             ],
@@ -147,7 +137,6 @@ export const useSimulatorStore = create<SimulatorState>()(
             name: draft.name,
             gender: draft.gender,
             arrived: false,
-            spent: false,
             tableId: null,
           }));
           return {
@@ -183,13 +172,6 @@ export const useSimulatorStore = create<SimulatorState>()(
           selectedPersonId: state.people.find((person) => person.id === personId)?.arrived ? null : personId,
         }));
       },
-      toggleSpent: (personId) => {
-        set((state) => ({
-          people: state.people.map((person) =>
-            person.id === personId ? { ...person, spent: !person.spent } : person,
-          ),
-        }));
-      },
       selectPerson: (personId) => {
         set((state) => ({
           people: state.people.map((person) =>
@@ -200,10 +182,7 @@ export const useSimulatorStore = create<SimulatorState>()(
       },
       seatPerson: (personId, tableId) => {
         const state = get();
-        const table = state.tables.find((item) => item.id === tableId);
-        if (!table) return false;
-        const currentCount = tablePeople(state.people, tableId).filter((person) => person.id !== personId).length;
-        if (currentCount >= table.capacity) return false;
+        if (!state.tables.some((table) => table.id === tableId)) return false;
         set((current) => ({
           people: current.people.map((person) =>
             person.id === personId ? { ...person, arrived: true, tableId } : person,
@@ -227,7 +206,6 @@ export const useSimulatorStore = create<SimulatorState>()(
             {
               id: crypto.randomUUID(),
               name: `Masa ${state.tables.length + 1}`,
-              capacity: Math.max(1, state.tableCapacityDraft),
             },
           ],
         }));
@@ -249,17 +227,16 @@ export const useSimulatorStore = create<SimulatorState>()(
       },
       randomDistribute: () => {
         const state = get();
-        const seats = state.tables.flatMap((table) => {
-          const emptySeatCount = Math.max(0, table.capacity - tablePeople(state.people, table.id).length);
-          return Array.from({ length: emptySeatCount }, () => table.id);
-        });
+        if (!state.tables.length) return 0;
         const unseatedArrivals = shuffle(state.people.filter((person) => person.arrived && !person.tableId));
-        const shuffledSeats = shuffle(seats);
+        if (!unseatedArrivals.length) return 0;
+
+        const shuffledTables = shuffle(state.tables);
         const placements = new Map<string, string>();
-        unseatedArrivals.slice(0, shuffledSeats.length).forEach((person, index) => {
-          placements.set(person.id, shuffledSeats[index]);
+        unseatedArrivals.forEach((person, index) => {
+          placements.set(person.id, shuffledTables[index % shuffledTables.length].id);
         });
-        if (!placements.size) return 0;
+
         set((current) => ({
           people: current.people.map((person) =>
             placements.has(person.id) ? { ...person, tableId: placements.get(person.id)! } : person,
@@ -277,7 +254,6 @@ export const useSimulatorStore = create<SimulatorState>()(
             : [...state.statusFilters, value],
         })),
       clearStatusFilters: () => set({ statusFilters: [] }),
-      setTableCapacityDraft: (value) => set({ tableCapacityDraft: Math.max(1, value || 1) }),
       exportState: () => {
         const state = get();
         return {
@@ -293,7 +269,6 @@ export const useSimulatorStore = create<SimulatorState>()(
             statusFilters: state.statusFilters,
             statusFilter: state.statusFilters[0] ?? "all",
           },
-          tableCapacityDraft: state.tableCapacityDraft,
         };
       },
       importState: (payload) => {
@@ -314,12 +289,11 @@ export const useSimulatorStore = create<SimulatorState>()(
             ...person,
             tableId: person.tableId && tableIds.has(person.tableId) ? person.tableId : null,
           })),
-          tables: tables.length ? tables : defaultTables,
+          tables,
           selectedPersonId: selectedPersonId && people.some((person) => person.id === selectedPersonId) ? selectedPersonId : null,
           searchQuery: typeof filters.searchQuery === "string" ? filters.searchQuery : "",
           genderFilter: ["all", "Kadın", "Erkek", "—"].includes(genderFilter) ? genderFilter : "all",
           statusFilters,
-          tableCapacityDraft: Math.max(1, Number(payload.tableCapacityDraft) || 8),
         });
         return true;
       },
@@ -331,12 +305,11 @@ export const useSimulatorStore = create<SimulatorState>()(
           searchQuery: "",
           genderFilter: "all",
           statusFilters: [],
-          tableCapacityDraft: 8,
         }),
     }),
     {
-      name: "ceyart-simulator-state-v1",
-      version: 1,
+      name: "ceyart-simulator-state-v2",
+      version: 2,
       partialize: (state) => ({
         people: state.people,
         tables: state.tables,
@@ -344,13 +317,18 @@ export const useSimulatorStore = create<SimulatorState>()(
         searchQuery: state.searchQuery,
         genderFilter: state.genderFilter,
         statusFilters: state.statusFilters,
-        tableCapacityDraft: state.tableCapacityDraft,
       }),
       merge: (persisted, current) => {
         if (!isRecord(persisted)) return current;
         return {
           ...current,
           ...persisted,
+          people: Array.isArray(persisted.people)
+            ? persisted.people.map((person, index) => normalizePerson(isRecord(person) ? person : {}, index))
+            : current.people,
+          tables: Array.isArray(persisted.tables)
+            ? persisted.tables.map((table, index) => normalizeTable(isRecord(table) ? table : {}, index))
+            : current.tables,
           statusFilters: normalizeStatusFilters(persisted.statusFilters ?? persisted.statusFilter),
         };
       },

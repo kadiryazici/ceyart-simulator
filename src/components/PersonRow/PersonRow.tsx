@@ -1,4 +1,9 @@
 import { FormEvent, useState } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import CheckmarkCircle02Icon from "@hugeicons/core-free-icons/CheckmarkCircle02Icon";
+import CircleIcon from "@hugeicons/core-free-icons/CircleIcon";
+import Delete02Icon from "@hugeicons/core-free-icons/Delete02Icon";
+import Edit02Icon from "@hugeicons/core-free-icons/Edit02Icon";
 import { getTableName } from "../../store/selectors";
 import { useSimulatorStore } from "../../store/simulatorStore";
 import type { Gender, Person } from "../../types/simulator";
@@ -11,7 +16,6 @@ export function PersonRow({ person }: PersonRowProps) {
   const tables = useSimulatorStore((state) => state.tables);
   const selectedPersonId = useSimulatorStore((state) => state.selectedPersonId);
   const toggleArrived = useSimulatorStore((state) => state.toggleArrived);
-  const toggleSpent = useSimulatorStore((state) => state.toggleSpent);
   const selectPerson = useSimulatorStore((state) => state.selectPerson);
   const updatePerson = useSimulatorStore((state) => state.updatePerson);
   const deletePerson = useSimulatorStore((state) => state.deletePerson);
@@ -53,7 +57,7 @@ export function PersonRow({ person }: PersonRowProps) {
   return (
     <article
       className={[
-        "mb-2 grid min-h-16 cursor-pointer grid-cols-[auto_auto_1fr_auto] items-center gap-2 rounded-lg border p-2",
+        "mb-2 grid min-h-16 cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-2 rounded-lg border p-2",
         selectedPersonId === person.id ? "border-blue-300 bg-blue-50" : "border-transparent bg-white hover:border-blue-200 hover:bg-slate-50",
         person.tableId ? "opacity-70" : "",
       ].join(" ")}
@@ -62,10 +66,7 @@ export function PersonRow({ person }: PersonRowProps) {
       onDragStart={(event) => event.dataTransfer.setData("text/plain", person.id)}
     >
       <button type="button" className={person.arrived ? "check-on" : "check"} title="Geldi" onClick={(event) => { event.stopPropagation(); toggleArrived(person.id); }}>
-        ✓
-      </button>
-      <button type="button" className={person.spent ? "money-on" : "check"} title="Harcama yaptı" onClick={(event) => { event.stopPropagation(); toggleSpent(person.id); }}>
-        ₺
+        <HugeiconsIcon icon={person.arrived ? CheckmarkCircle02Icon : CircleIcon} size={17} />
       </button>
       <div className="min-w-0">
         <strong className="break-words text-sm">
@@ -75,14 +76,17 @@ export function PersonRow({ person }: PersonRowProps) {
         <div className="mt-1 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
           <span className="rounded-full bg-slate-100 px-2 py-1">{person.gender}</span>
           <span>{person.arrived ? "Geldi" : "Bekleniyor"}</span>
-          <span>{person.spent ? "Harcadı" : "Harcamadı"}</span>
         </div>
         <span className="mt-1 block break-words text-xs font-bold text-slate-500">{tableNote}</span>
       </div>
       <div className="flex items-center gap-1">
         <span className="text-xs font-bold text-slate-500">{tableName || "Seç"}</span>
-        <button type="button" className="icon-btn" title="Düzenle" onClick={(event) => { event.stopPropagation(); setName(person.name); setGender(person.gender); setIsEditing(true); }}>✎</button>
-        <button type="button" className="icon-btn-danger" title="Sil" onClick={(event) => { event.stopPropagation(); handleDelete(); }}>×</button>
+        <button type="button" className="icon-btn" title="Düzenle" onClick={(event) => { event.stopPropagation(); setName(person.name); setGender(person.gender); setIsEditing(true); }}>
+          <HugeiconsIcon icon={Edit02Icon} size={16} />
+        </button>
+        <button type="button" className="icon-btn-danger" title="Sil" onClick={(event) => { event.stopPropagation(); handleDelete(); }}>
+          <HugeiconsIcon icon={Delete02Icon} size={16} />
+        </button>
       </div>
     </article>
   );

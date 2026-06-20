@@ -1,3 +1,6 @@
+import { HugeiconsIcon } from "@hugeicons/react";
+import Cancel01Icon from "@hugeicons/core-free-icons/Cancel01Icon";
+import Delete02Icon from "@hugeicons/core-free-icons/Delete02Icon";
 import { getTablePeople } from "../../store/selectors";
 import { useSimulatorStore } from "../../store/simulatorStore";
 import type { Table } from "../../types/simulator";
@@ -14,7 +17,6 @@ export function TableCard({ table }: TableCardProps) {
   const updateTableName = useSimulatorStore((state) => state.updateTableName);
   const deleteTable = useSimulatorStore((state) => state.deleteTable);
   const seated = getTablePeople(people, table.id);
-  const emptySeats = Math.max(0, table.capacity - seated.length);
 
   const handleSeatSelected = () => {
     if (selectedPersonId) {
@@ -34,7 +36,7 @@ export function TableCard({ table }: TableCardProps) {
     >
       <div className="grid grid-cols-[1fr_auto] items-center gap-2 border-b border-slate-200 bg-slate-50 p-3">
         <input className="min-w-0 bg-transparent font-bold outline-none" value={table.name} onClick={(event) => event.stopPropagation()} onChange={(event) => updateTableName(table.id, event.target.value)} />
-        <span className="text-xs font-bold text-slate-500">{seated.length}/{table.capacity}</span>
+        <span className="rounded-full bg-slate-200 px-2 py-1 text-xs font-bold text-slate-600">{seated.length}</span>
       </div>
       <ul className="min-h-0 space-y-2 overflow-auto p-3">
         {seated.length ? (
@@ -44,7 +46,9 @@ export function TableCard({ table }: TableCardProps) {
                 <span className="mr-2 inline-flex h-6 min-w-8 items-center justify-center rounded-full bg-slate-200 px-2 text-xs text-slate-600">{person.number}</span>
                 {person.name}
               </strong>
-              <button type="button" className="icon-btn-danger" title="Masadan al" onClick={(event) => { event.stopPropagation(); removeFromTable(person.id); }}>×</button>
+              <button type="button" className="icon-btn-danger" title="Masadan al" onClick={(event) => { event.stopPropagation(); removeFromTable(person.id); }}>
+                <HugeiconsIcon icon={Cancel01Icon} size={16} />
+              </button>
             </li>
           ))
         ) : (
@@ -52,8 +56,10 @@ export function TableCard({ table }: TableCardProps) {
         )}
       </ul>
       <div className="flex items-center justify-between gap-2 border-t border-slate-200 bg-slate-50 p-3">
-        <span className="text-xs font-bold text-slate-500">{emptySeats} boş yer</span>
-        <button type="button" className="icon-btn-danger" title="Masayı kaldır" onClick={(event) => { event.stopPropagation(); deleteTable(table.id); }}>×</button>
+        <span className="text-xs font-bold text-slate-500">Sınırsız kişi</span>
+        <button type="button" className="icon-btn-danger" title="Masayı kaldır" onClick={(event) => { event.stopPropagation(); deleteTable(table.id); }}>
+          <HugeiconsIcon icon={Delete02Icon} size={16} />
+        </button>
       </div>
     </article>
   );
