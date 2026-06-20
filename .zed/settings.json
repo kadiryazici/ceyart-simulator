@@ -1,0 +1,55 @@
+// Project-local Zed settings — mirrors .vscode/settings.json
+{
+  "format_on_save": "on",
+  "linked_edits": true,
+  "languages": {
+    // Use tsgo instead of the default vtsls
+    "TypeScript": {
+      "language_servers": ["tsgo", "!vtsls", "..."],
+      "formatter": "language_server",
+      "format_on_save": "on",
+    },
+    "TSX": {
+      "language_servers": ["tsgo", "!vtsls", "..."],
+      "formatter": "language_server",
+      "format_on_save": "on",
+    },
+    "JavaScript": {
+      "language_servers": ["tsgo", "!vtsls", "..."],
+    },
+  },
+  "lsp": {
+    // Non-relative import specifiers, matching js/ts.preferences.importModuleSpecifier
+    "tsgo": {
+      "settings": {
+        "typescript": {
+          "preferences": {
+            "importModuleSpecifier": "non-relative",
+          },
+        },
+        "javascript": {
+          "preferences": {
+            "importModuleSpecifier": "non-relative",
+          },
+        },
+      },
+    },
+    // Tailwind class detection in cva/cn/clsx etc.
+    "tailwindcss-language-server": {
+      "settings": {
+        "classFunctions": [
+          "cva",
+          "cn",
+          "clsx",
+          "classNames",
+          "classnames",
+          "twMerge",
+          "twc",
+        ],
+        "lint": {
+          "suggestCanonicalClasses": "ignore",
+        },
+      },
+    },
+  },
+}

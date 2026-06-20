@@ -1,70 +1,94 @@
-import { getFilteredPeople } from "../../store/selectors";
-import { useSimulatorStore } from "../../store/simulatorStore";
-import type { GenderFilter, StatusFilter } from "../../types/simulator";
-import { PersonForm } from "../PersonForm/PersonForm";
-import { PersonRow } from "../PersonRow/PersonRow";
+import { useState } from "react"
+import type { ComponentProps } from "react"
+import { Menu } from "@base-ui/react/menu"
+import { HugeiconsIcon } from "@hugeicons/react"
+import Add01Icon from "@hugeicons/core-free-icons/Add01Icon"
+import ArrowDown01Icon from "@hugeicons/core-free-icons/ArrowDown01Icon"
+import CheckIcon from "@hugeicons/core-free-icons/CheckIcon"
+import FilterIcon from "@hugeicons/core-free-icons/FilterIcon"
+import { cn } from "../../lib/cn"
+import { getFilteredPeople } from "../../store/selectors"
+import { useSimulatorStore } from "../../store/simulatorStore"
+import type { StatusFilter } from "../../types/simulator"
+import { AddPersonModal } from "../AddPersonModal/AddPersonModal"
+import { Button } from "../Button/Button"
+import { PersonRow } from "../PersonRow/PersonRow"
+import { SearchInput } from "../SearchInput/SearchInput"
 
 const statusFilters: Array<{ label: string; value: StatusFilter }> = [
+  { label: "Tümü", value: "all" },
   { label: "Gelen", value: "arrived" },
   { label: "Gelmeyen", value: "not-arrived" },
   { label: "Masasız", value: "unseated" },
-];
+]
 
-export function PeoplePanel() {
-  const people = useSimulatorStore((state) => state.people);
-  const searchQuery = useSimulatorStore((state) => state.searchQuery);
-  const genderFilter = useSimulatorStore((state) => state.genderFilter);
-  const statusFiltersValue = useSimulatorStore((state) => state.statusFilters);
-  const setSearchQuery = useSimulatorStore((state) => state.setSearchQuery);
-  const setGenderFilter = useSimulatorStore((state) => state.setGenderFilter);
-  const toggleStatusFilter = useSimulatorStore((state) => state.toggleStatusFilter);
-  const clearStatusFilters = useSimulatorStore((state) => state.clearStatusFilters);
-  const filteredPeople = getFilteredPeople(people, searchQuery, genderFilter, statusFiltersValue);
+export type PeoplePanelProps = ComponentProps<"aside">
+
+export function PeoplePanel(props: PeoplePanelProps) {
+  const { className, ...attrs } = props
+  const [isAddPersonOpen, setIsAddPersonOpen] = useState(false)
+  const people = useSimulatorStore((state) => state.people)
+  const searchQuery = useSimulatorStore((state) => state.searchQuery)
+  const statusFilter = useSimulatorStore((state) => state.statusFilter)
+  const setSearchQuery = useSimulatorStore((state) => state.setSearchQuery)
+  const setStatusFilter = useSimulatorStore((state) => state.setStatusFilter)
+  const filteredPeople = getFilteredPeople(people, searchQuery, "all", statusFilter)
+  const activeStatusFilter = statusFilters.find((filter) => filter.value === statusFilter) ?? statusFilters[0]
 
   return (
-    <aside className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] border-r border-slate-200 bg-white lg:h-screen lg:overflow-hidden">
-      <div className="grid gap-3 border-b border-slate-200 bg-white p-4">
-        <div className="flex min-h-8 items-center justify-between gap-3 font-bold">
-          <span>Kişiler</span>
-          <span className="rounded-full bg-slate-200 px-3 py-1 text-xs">{filteredPeople.length}</span>
+    <aside
+      {...attrs}
+      className={cn("grid min-h-0 grid-rows-[auto_minmax(0,1fr)] border-r border-slate-950/10 bg-[#fbfbfa] lg:h-screen lg:overflow-hidden", className)}
+    >
+      <div className="sticky top-3 z-10 m-3 mb-0 grid gap-3 rounded-[24px] border border-slate-950/10 bg-white/80 p-4 shadow-xl shadow-slate-950/[0.06] backdrop-blur-xl backdrop-saturate-150">
+        <div className="flex min-h-8 items-center justify-between gap-3">
+          <div className="flex min-w-0 items-baseline gap-2">
+            <span className="text-[15px] font-[720] text-slate-900">Kişiler</span>
+            <span className="text-xs font-[700] text-slate-500">({filteredPeople.length})</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Menu.Root>
+              <Menu.Trigger
+                render={
+                  <Button size="small" rounded="full" className="max-w-32 px-3" aria-label="Kişi filtresi">
+                    <HugeiconsIcon icon={FilterIcon} size={16} />
+                    <span className="truncate">{activeStatusFilter.label}</span>
+                    <HugeiconsIcon icon={ArrowDown01Icon} size={14} />
+                  </Button>
+                }
+              />
+              <Menu.Portal>
+                <Menu.Positioner className="z-[100]" sideOffset={8} align="end">
+                  <Menu.Popup className="menu-popup">
+                    {statusFilters.map((filter) => (
+                      <Menu.Item
+                        key={filter.value}
+                        className="menu-item justify-between"
+                        onClick={() => setStatusFilter(filter.value)}
+                      >
+                        <span>{filter.label}</span>
+                        {statusFilter === filter.value ? <HugeiconsIcon icon={CheckIcon} size={16} /> : null}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Popup>
+                </Menu.Positioner>
+              </Menu.Portal>
+            </Menu.Root>
+            <Button size="square" aria-label="Kişi ekle" onClick={() => setIsAddPersonOpen(true)}>
+              <HugeiconsIcon icon={Add01Icon} size={18} />
+            </Button>
+          </div>
         </div>
-        <div className="grid grid-cols-[1fr_112px] gap-2">
-          <input className="field" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="İsim ara" type="search" />
-          <select className="field" value={genderFilter} onChange={(event) => setGenderFilter(event.target.value as GenderFilter)}>
-            <option value="all">Tümü</option>
-            <option value="Kadın">Kadın</option>
-            <option value="Erkek">Erkek</option>
-            <option value="—">Belirsiz</option>
-          </select>
-        </div>
-        <PersonForm />
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <button
-            type="button"
-            className={!statusFiltersValue.length ? "segment-active" : "segment"}
-            onClick={clearStatusFilters}
-          >
-            Tümü
-          </button>
-          {statusFilters.map((filter) => (
-            <button
-              key={filter.value}
-              type="button"
-              className={statusFiltersValue.includes(filter.value) ? "segment-active" : "segment"}
-              onClick={() => toggleStatusFilter(filter.value)}
-            >
-              {filter.label}
-            </button>
-          ))}
-        </div>
+        <SearchInput value={searchQuery} onValueChange={setSearchQuery} />
       </div>
-      <div className="p-2 lg:min-h-0 lg:overflow-auto">
+      <div className="p-3 lg:min-h-0 lg:overflow-auto">
         {filteredPeople.length ? (
           filteredPeople.map((person) => <PersonRow key={person.id} person={person} />)
         ) : (
           <p className="py-8 text-center text-sm font-medium text-slate-500">Kişi bulunamadı.</p>
         )}
       </div>
+      {isAddPersonOpen ? <AddPersonModal onClose={() => setIsAddPersonOpen(false)} /> : null}
     </aside>
   );
 }

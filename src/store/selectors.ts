@@ -7,18 +7,17 @@ export const getFilteredPeople = (
   people: Person[],
   searchQuery: string,
   genderFilter: GenderFilter,
-  statusFilters: StatusFilter[],
+  statusFilter: StatusFilter,
 ) => {
   const query = searchQuery.trim().toLocaleLowerCase("tr-TR");
   return people.filter((person) => {
     const matchesQuery = !query || person.name.toLocaleLowerCase("tr-TR").includes(query);
     const matchesGender = genderFilter === "all" || person.gender === genderFilter;
-    const matchesStatus = statusFilters.every((statusFilter) => {
-      if (statusFilter === "arrived") return person.arrived;
-      if (statusFilter === "not-arrived") return !person.arrived;
-      if (statusFilter === "unseated") return !person.tableId;
-      return true;
-    });
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "arrived" && person.arrived) ||
+      (statusFilter === "not-arrived" && !person.arrived) ||
+      (statusFilter === "unseated" && !person.tableId);
 
     return matchesQuery && matchesGender && matchesStatus;
   });

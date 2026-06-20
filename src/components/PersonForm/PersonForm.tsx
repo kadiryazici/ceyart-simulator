@@ -1,31 +1,41 @@
-import { FormEvent, useState } from "react";
-import { useSimulatorStore } from "../../store/simulatorStore";
-import type { Gender } from "../../types/simulator";
+import { FormEvent, useState } from "react"
+import type { ComponentProps } from "react"
+import { cn } from "../../lib/cn"
+import { useSimulatorStore } from "../../store/simulatorStore"
+import type { Gender } from "../../types/simulator"
+import { Button } from "../Button/Button"
 
-export function PersonForm() {
-  const addPerson = useSimulatorStore((state) => state.addPerson);
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState<Gender>("—");
+export type PersonFormProps = Omit<ComponentProps<"form">, "onSubmit">
+
+export function PersonForm(props: PersonFormProps) {
+  const { className, ...attrs } = props
+  const addPerson = useSimulatorStore((state) => state.addPerson)
+  const [name, setName] = useState("")
+  const [gender, setGender] = useState<Gender>("Bilinmiyor")
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!name.trim()) return;
-    addPerson({ name, gender });
-    setName("");
-    setGender("—");
-  };
+    event.preventDefault()
+    if (!name.trim()) return
+    addPerson({ name, gender })
+    setName("")
+    setGender("Bilinmiyor")
+  }
 
   return (
-    <form className="grid grid-cols-[1fr_104px_auto] gap-2 max-sm:grid-cols-1" onSubmit={handleSubmit}>
+    <form
+      {...attrs}
+      className={cn("grid grid-cols-[1fr_104px_auto] gap-2", className)}
+      onSubmit={handleSubmit}
+    >
       <input className="field" value={name} onChange={(event) => setName(event.target.value)} placeholder="Yeni kişi adı" />
       <select className="field" value={gender} onChange={(event) => setGender(event.target.value as Gender)}>
-        <option value="—">Belirsiz</option>
+        <option value="Bilinmiyor">Bilinmiyor</option>
         <option value="Kadın">Kadın</option>
         <option value="Erkek">Erkek</option>
       </select>
-      <button type="submit" className="btn-primary">
+      <Button type="submit" color="primary">
         Ekle
-      </button>
+      </Button>
     </form>
   );
 }

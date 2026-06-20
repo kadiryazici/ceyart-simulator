@@ -1,4 +1,4 @@
-export type Gender = "Kadın" | "Erkek" | "—";
+export type Gender = "Kadın" | "Erkek" | "Bilinmiyor";
 
 export type Person = {
   id: string;
@@ -15,6 +15,7 @@ export type Table = {
 };
 
 export type StatusFilter =
+  | "all"
   | "arrived"
   | "not-arrived"
   | "unseated";
@@ -36,7 +37,6 @@ export type SimulatorExport = {
   filters: {
     searchQuery: string;
     genderFilter: GenderFilter;
-    statusFilters: StatusFilter[];
-    statusFilter?: StatusFilter | "all";
+    statusFilter: StatusFilter;
   };
 };
