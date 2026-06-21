@@ -7,8 +7,8 @@ import { getTablePeople } from "../../store/selectors"
 import { useSimulatorStore } from "../../store/simulatorStore"
 import type { Table } from "../../types/simulator"
 import { Button } from "../Button/Button"
-import { More01Icon, More02Icon, More03Icon, MoreIcon, MoreVerticalIcon, OptionsCallIcon } from "@hugeicons/core-free-icons";
-import { Menu } from "@base-ui/react/menu";
+import MoreVerticalIcon from "@hugeicons/core-free-icons/MoreVerticalIcon"
+import { Menu } from "@base-ui/react/menu"
 
 export type TableCardProps = ComponentProps<"article"> & {
   table: Table
@@ -62,7 +62,14 @@ export function TableCard(props: TableCardProps) {
 
                 <Menu.Separator className="menu-separator" />
 
-                <Menu.Item onSelect={() => deleteTable(table.id)} className="menu-item text-red-700">
+                <Menu.Item
+                  onClick={() => {
+                    if (window.confirm(`${table.name} silinsin mi?`)) {
+                      deleteTable(table.id)
+                    }
+                  }}
+                  className="menu-item text-red-700"
+                >
                   <HugeiconsIcon icon={Delete02Icon} size={16} />
                   <span>Masayı sil</span>
                 </Menu.Item>
