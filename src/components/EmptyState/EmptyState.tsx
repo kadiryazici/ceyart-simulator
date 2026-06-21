@@ -15,21 +15,20 @@ export function EmptyState(props: EmptyStateProps) {
   return (
     <div
       {...attrs}
-      className={cn("grid min-h-full place-items-center rounded-[28px] border border-dashed border-slate-950/12 bg-white/65 p-8 shadow-sm shadow-slate-950/[0.03] backdrop-blur", className)}
+      className={cn("grid max-w-md h-fit justify-items-center text-center", className)}
     >
-      <div className="grid max-w-md justify-items-center text-center">
-        <div className="mb-6 grid h-24 w-24 place-items-center rounded-3xl border border-dashed border-slate-950/15 bg-white text-slate-700">
-          <HugeiconsIcon icon={DiningTableIcon} size={42} strokeWidth={1.7} />
-        </div>
-        <h2 className="text-xl font-[760] text-slate-900">Henüz masa yok</h2>
-        <p className="mt-2 text-sm font-[520] leading-6 text-slate-500">
-          Yerleşime başlamak için ilk masayı ekle. Kişileri sol panelden seçip masaya taşıyabilirsin.
-        </p>
-        <Button color="primary" className="mt-5" onClick={addTable}>
-          <HugeiconsIcon icon={Add01Icon} size={18} />
-          <span>Masa ekle</span>
-        </Button>
+
+      <div className="mb-6 grid h-24 w-24 place-items-center rounded-3xl border border-dashed border-slate-950/15 bg-white text-slate-700">
+        <HugeiconsIcon icon={DiningTableIcon} size={42} strokeWidth={1.7} />
       </div>
+      <h2 className="text-xl font-[760] text-slate-900">Henüz masa yok</h2>
+      <p className="mt-2 text-sm font-[520] leading-6 text-slate-500">
+        Yerleşime başlamak için ilk masayı ekle. Kişileri sol panelden seçip masaya taşıyabilirsin.
+      </p>
+      <Button color="primary" className="mt-5" onClick={addTable}>
+        <HugeiconsIcon icon={Add01Icon} size={18} />
+        <span>Masa ekle</span>
+      </Button>
     </div>
   );
 }

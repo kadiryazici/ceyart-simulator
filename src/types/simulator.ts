@@ -5,7 +5,6 @@ export type Person = {
   number: number;
   name: string;
   gender: Gender;
-  arrived: boolean;
   tableId: string | null;
 };
 
@@ -16,8 +15,7 @@ export type Table = {
 
 export type StatusFilter =
   | "all"
-  | "arrived"
-  | "not-arrived"
+  | "seated"
   | "unseated";
 
 export type GenderFilter = Gender | "all";
@@ -33,7 +31,6 @@ export type SimulatorExport = {
   exportedAt: string;
   people: Person[];
   tables: Table[];
-  selectedPersonId: string | null;
   filters: {
     searchQuery: string;
     genderFilter: GenderFilter;

@@ -8,7 +8,6 @@ export function StatsBar(props: StatsBarProps) {
   const { className, ...attrs } = props
   const people = useSimulatorStore((state) => state.people)
   const total = people.length
-  const arrived = people.filter((person) => person.arrived).length
   const seated = people.filter((person) => person.tableId).length
 
   return (
@@ -18,7 +17,6 @@ export function StatsBar(props: StatsBarProps) {
       aria-label="Özet"
     >
       <StatCard label="Toplam" value={total} />
-      <StatCard label="Geldi" value={arrived} />
       <StatCard label="Masada" value={seated} />
     </section>
   )

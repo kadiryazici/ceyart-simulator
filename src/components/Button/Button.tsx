@@ -3,7 +3,7 @@ import { cn } from "../../lib/cn"
 
 type ButtonSize = "normal" | "small" | "square"
 type ButtonRounded = "full" | "default" | "none"
-type ButtonColor = "primary" | "secondary" | "tertiary" | "danger"
+type ButtonColor = "primary" | "secondary" | "tertiary" | "danger" | "ghost"
 
 export type ButtonProps = ComponentProps<"button"> & {
   color?: ButtonColor
@@ -35,6 +35,8 @@ const colorClassNames: Record<ButtonColor, string> = {
     "border-slate-950/10 bg-white/80 text-slate-700 shadow-slate-950/[0.03] hover:border-slate-950/15 hover:bg-white hover:text-slate-950",
   danger:
     "border-red-200/80 bg-red-50/90 text-red-700 shadow-red-950/[0.03] hover:border-red-200 hover:bg-red-100 hover:text-red-800",
+  ghost:
+    "border-transparent bg-transparent text-slate-700 shadow-none hover:border-slate-950/10 hover:bg-slate-950/[0.02] hover:text-slate-950",
 }
 
 export function Button(props: ButtonProps) {

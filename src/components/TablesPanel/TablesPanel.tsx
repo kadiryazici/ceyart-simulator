@@ -13,14 +13,14 @@ export function TablesPanel(props: TablesPanelProps) {
   return (
     <section
       {...attrs}
-      className={cn("h-full min-h-0 overflow-auto p-6 pb-28", className)}
+      className={cn("w-full flex", className)}
     >
-      {tables.length ? (
-        <div className="grid auto-rows-[clamp(320px,46vh,540px)] grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
+      {tables.length > 0 ? (
+        <div className="grid w-full auto-rows-[400px] grid-cols-3 auto-cols-fr gap-4">
           {tables.map((table) => <TableCard key={table.id} table={table} />)}
         </div>
       ) : (
-        <EmptyState />
+        <EmptyState className="col-span-full m-auto" />
       )}
     </section>
   );

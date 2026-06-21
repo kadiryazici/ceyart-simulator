@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import type { ComponentProps } from "react"
 import { Menu } from "@base-ui/react/menu"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -17,8 +17,7 @@ import { SearchInput } from "../SearchInput/SearchInput"
 
 const statusFilters: Array<{ label: string; value: StatusFilter }> = [
   { label: "Tümü", value: "all" },
-  { label: "Gelen", value: "arrived" },
-  { label: "Gelmeyen", value: "not-arrived" },
+  { label: "Masalı", value: "seated" },
   { label: "Masasız", value: "unseated" },
 ]
 
@@ -38,9 +37,9 @@ export function PeoplePanel(props: PeoplePanelProps) {
   return (
     <aside
       {...attrs}
-      className={cn("grid min-h-0 grid-rows-[auto_minmax(0,1fr)] border-r border-slate-950/10 bg-[#fbfbfa] lg:h-screen lg:overflow-hidden", className)}
+      className={cn("grid min-h-0 grid-rows-[auto_minmax(0,1fr)] border-r border-slate-950/10 bg-white h-screen", className)}
     >
-      <div className="sticky top-3 z-10 m-3 mb-0 grid gap-3 rounded-[24px] border border-slate-950/10 bg-white/80 p-4 shadow-xl shadow-slate-950/[0.06] backdrop-blur-xl backdrop-saturate-150">
+      <div className="sticky top-3 z-10 m-3 mb-0 grid gap-3 p-3 border-b border-b-slate-200">
         <div className="flex min-h-8 items-center justify-between gap-3">
           <div className="flex min-w-0 items-baseline gap-2">
             <span className="text-[15px] font-[720] text-slate-900">Kişiler</span>
@@ -81,9 +80,17 @@ export function PeoplePanel(props: PeoplePanelProps) {
         </div>
         <SearchInput value={searchQuery} onValueChange={setSearchQuery} />
       </div>
-      <div className="p-3 lg:min-h-0 lg:overflow-auto">
+
+      <div className="lg:min-h-0 lg:overflow-auto">
         {filteredPeople.length ? (
-          filteredPeople.map((person) => <PersonRow key={person.id} person={person} />)
+          filteredPeople.map((person, index) => (
+            <Fragment key={person.id}>
+              {index > 0 && (
+                <div className="h-px w-full bg-slate-950/10" />
+              )}
+              <PersonRow key={person.id} person={person} />
+            </Fragment>
+          ))
         ) : (
           <p className="py-8 text-center text-sm font-medium text-slate-500">Kişi bulunamadı.</p>
         )}

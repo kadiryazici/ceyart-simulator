@@ -15,7 +15,6 @@ import type {
 type SimulatorState = {
   people: Person[];
   tables: Table[];
-  selectedPersonId: string | null;
   searchQuery: string;
   genderFilter: GenderFilter;
   statusFilter: StatusFilter;
@@ -24,8 +23,6 @@ type SimulatorState = {
   importPeopleFromText: (text: string) => number;
   updatePerson: (personId: string, draft: PersonDraft) => void;
   deletePerson: (personId: string) => void;
-  toggleArrived: (personId: string) => void;
-  selectPerson: (personId: string) => void;
   seatPerson: (personId: string, tableId: string) => boolean;
   removeFromTable: (personId: string) => void;
   addTable: () => void;
@@ -98,7 +95,6 @@ const normalizePerson = (person: Partial<Person>, index: number): Person => ({
       ? person.name.trim()
       : "İsimsiz",
   gender: normalizeGender(String(person.gender ?? "Bilinmiyor")),
-  arrived: Boolean(person.arrived),
   tableId:
     typeof person.tableId === "string" && person.tableId
       ? person.tableId
@@ -118,8 +114,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 const validStatusFilters: StatusFilter[] = [
   "all",
-  "arrived",
-  "not-arrived",
+  "seated",
   "unseated",
 ];
 
@@ -152,7 +147,6 @@ export const useSimulatorStore = create<SimulatorState>()(
     (set, get) => ({
       people: [],
       tables: defaultTables,
-      selectedPersonId: null,
       searchQuery: "",
       genderFilter: "all",
       statusFilter: "all",
@@ -209,7 +203,6 @@ export const useSimulatorStore = create<SimulatorState>()(
             arrived: false,
             tableId: null,
           })),
-          selectedPersonId: null,
         });
         return drafts.length;
       },
@@ -227,38 +220,6 @@ export const useSimulatorStore = create<SimulatorState>()(
       deletePerson: (personId) => {
         set((state) => ({
           people: state.people.filter((person) => person.id !== personId),
-          selectedPersonId:
-            state.selectedPersonId === personId ? null : state.selectedPersonId,
-        }));
-      },
-      toggleArrived: (personId) => {
-        set((state) => ({
-          people: state.people.map((person) => {
-            if (person.id !== personId) return person;
-            const arrived = !person.arrived;
-            return {
-              ...person,
-              arrived,
-              tableId: arrived ? person.tableId : null,
-            };
-          }),
-          selectedPersonId: state.people.find(
-            (person) => person.id === personId,
-          )?.arrived
-            ? null
-            : personId,
-        }));
-      },
-      selectPerson: (personId) => {
-        set((state) => ({
-          people: state.people.map((person) =>
-            person.id === personId ? { ...person, arrived: true } : person,
-          ),
-          selectedPersonId: state.people.find(
-            (person) => person.id === personId,
-          )?.tableId
-            ? null
-            : personId,
         }));
       },
       seatPerson: (personId, tableId) => {
@@ -267,10 +228,9 @@ export const useSimulatorStore = create<SimulatorState>()(
         set((current) => ({
           people: current.people.map((person) =>
             person.id === personId
-              ? { ...person, arrived: true, tableId }
+              ? { ...person, tableId }
               : person,
           ),
-          selectedPersonId: null,
         }));
         return true;
       },
@@ -279,7 +239,6 @@ export const useSimulatorStore = create<SimulatorState>()(
           people: state.people.map((person) =>
             person.id === personId ? { ...person, tableId: null } : person,
           ),
-          selectedPersonId: personId,
         }));
       },
       addTable: () => {
@@ -312,7 +271,7 @@ export const useSimulatorStore = create<SimulatorState>()(
         const state = get();
         if (!state.tables.length) return 0;
         const unseatedArrivals = shuffle(
-          state.people.filter((person) => person.arrived && !person.tableId),
+          state.people.filter((person) => person.tableId == null),
         );
         if (!unseatedArrivals.length) return 0;
 
@@ -331,7 +290,6 @@ export const useSimulatorStore = create<SimulatorState>()(
               ? { ...person, tableId: placements.get(person.id)! }
               : person,
           ),
-          selectedPersonId: null,
         }));
         return placements.size;
       },
@@ -346,7 +304,6 @@ export const useSimulatorStore = create<SimulatorState>()(
           exportedAt: new Date().toISOString(),
           people: state.people,
           tables: state.tables,
-          selectedPersonId: state.selectedPersonId,
           filters: {
             searchQuery: state.searchQuery,
             genderFilter: state.genderFilter,
@@ -374,10 +331,6 @@ export const useSimulatorStore = create<SimulatorState>()(
         const statusFilter = normalizeStatusFilter(
           filters.statusFilter ?? filters.statusFilters,
         );
-        const selectedPersonId =
-          typeof payload.selectedPersonId === "string"
-            ? payload.selectedPersonId
-            : null;
 
         set({
           people: people.map((person) => ({
@@ -388,11 +341,6 @@ export const useSimulatorStore = create<SimulatorState>()(
                 : null,
           })),
           tables,
-          selectedPersonId:
-            selectedPersonId &&
-            people.some((person) => person.id === selectedPersonId)
-              ? selectedPersonId
-              : null,
           searchQuery:
             typeof filters.searchQuery === "string" ? filters.searchQuery : "",
           genderFilter: normalizeGenderFilter(filters.genderFilter),
@@ -404,7 +352,6 @@ export const useSimulatorStore = create<SimulatorState>()(
         set({
           people: [],
           tables: defaultTables,
-          selectedPersonId: null,
           searchQuery: "",
           genderFilter: "all",
           statusFilter: "all",
@@ -416,7 +363,6 @@ export const useSimulatorStore = create<SimulatorState>()(
       partialize: (state) => ({
         people: state.people,
         tables: state.tables,
-        selectedPersonId: state.selectedPersonId,
         searchQuery: state.searchQuery,
         genderFilter: state.genderFilter,
         statusFilter: state.statusFilter,
@@ -428,13 +374,13 @@ export const useSimulatorStore = create<SimulatorState>()(
           ...persisted,
           people: Array.isArray(persisted.people)
             ? persisted.people.map((person, index) =>
-                normalizePerson(isRecord(person) ? person : {}, index),
-              )
+              normalizePerson(isRecord(person) ? person : {}, index),
+            )
             : current.people,
           tables: Array.isArray(persisted.tables)
             ? persisted.tables.map((table, index) =>
-                normalizeTable(isRecord(table) ? table : {}, index),
-              )
+              normalizeTable(isRecord(table) ? table : {}, index),
+            )
             : current.tables,
           genderFilter: normalizeGenderFilter(persisted.genderFilter),
           statusFilter: normalizeStatusFilter(
