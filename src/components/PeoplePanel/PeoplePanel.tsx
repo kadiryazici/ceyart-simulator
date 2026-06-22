@@ -58,15 +58,16 @@ export function PeoplePanel(props: PeoplePanelProps) {
         <Drawer.Viewport className="fixed inset-0 z-50 flex justify-start lg:hidden">
           <Drawer.Popup
             className="h-full w-[min(400px,calc(100vw-44px))] overflow-hidden bg-white text-slate-900 shadow-2xl shadow-slate-950/25 outline-none [transform:translateX(var(--drawer-swipe-movement-x))] transition-transform duration-300 data-ending-style:translate-x-[-100%] data-ending-style:opacity-[0.9999] data-starting-style:translate-x-[-100%]"
-            render={
+            render={(popupProps) => (
               <motion.aside
                 initial={{ opacity: 0.9999, x: -24 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.18, ease: "easeOut" }}
+                {...popupProps as object}
               />
-            }
+            )}
           >
-            <Drawer.Content className="h-full">
+            <Drawer.Content className="h-full min-h-0">
               <PeoplePanelImpl
                 {...attrs}
                 className={cn("h-full border-r-0", className)}
@@ -106,7 +107,7 @@ function PeoplePanelImpl(props: PeoplePanelImplProps) {
   return (
     <aside
       {...attrs}
-      className={cn("grid min-h-0 grid-rows-[auto_minmax(0,1fr)] border-r border-slate-950/10 bg-white h-screen", className)}
+      className={cn("grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] border-r border-slate-950/10 bg-white lg:h-screen", className)}
     >
       <div className="sticky top-3 z-10 m-3 mb-0 grid gap-3 p-3 border-b border-b-slate-200">
         <div className="flex min-h-8 items-center justify-between gap-3">
@@ -138,7 +139,7 @@ function PeoplePanelImpl(props: PeoplePanelImplProps) {
         <SearchInput value={searchQuery} onValueChange={setSearchQuery} />
       </div>
 
-      <div className="lg:min-h-0 lg:overflow-auto">
+      <div className="min-h-0 overflow-auto">
         {filteredPeople.length ? (
           filteredPeople.map((person, index) => (
             <Fragment key={person.id}>
