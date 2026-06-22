@@ -119,68 +119,65 @@ function AppControlBar(props: AppControlBarProps) {
         className,
       )}
     >
-      <div className="flex items-center gap-3">
-        <Button
-          size="small"
-          rounded="full"
-          color="primary"
-          className="font-[760] lg:hidden"
-          onClick={onPeopleOpen}
-        >
-          <HugeiconsIcon icon={GroupIcon} size={17} />
-          <span>Kişiler</span>
-        </Button>
-        <div className="flex items-center gap-1">
-          <Button
-            size="small"
-            rounded="full"
-            color="secondary"
-            className="font-[760]"
-            onClick={onAddTable}
-          >
-            <HugeiconsIcon icon={Add01Icon} size={17} />
-            <span className="hidden sm:inline">Masa ekle</span>
-          </Button>
-        </div>
+      <Button
+        size="small"
+        rounded="full"
+        color="primary"
+        className="font-[760] lg:hidden mr-auto"
+        onClick={onPeopleOpen}
+      >
+        <HugeiconsIcon icon={GroupIcon} size={17} />
+        <span>Kişiler</span>
+      </Button>
 
-        <SelectMenu
-          renderTrigger={
-            <Button
-              size="square"
-              rounded="full"
-              color="ghost"
-              aria-label="Diğer işlemler"
-            >
-              <HugeiconsIcon icon={MoreVerticalIcon} size={18} />
-            </Button>
-          }
-          items={[
-            {
-              icon: <HugeiconsIcon icon={Download01Icon} size={18} />,
-              label: "Dışa aktar",
-              onSelect: () => setTransferMode("export"),
-            },
-            {
-              icon: <HugeiconsIcon icon={Upload01Icon} size={18} />,
-              label: "İçe aktar",
-              onSelect: () => setTransferMode("import"),
-            },
-            "divider",
-            {
-              icon: <HugeiconsIcon icon={ShuffleIcon} size={18} />,
-              label: "Rastgele Dağıt",
-              onSelect: onRandomDistribute,
-            },
-            "divider",
-            {
-              icon: <HugeiconsIcon icon={RefreshIcon} size={18} />,
-              label: "Sıfırla",
-              type: "danger",
-              onSelect: onReset,
-            },
-          ]}
-        />
-      </div>
+      <Button
+        size="small"
+        rounded="full"
+        color="secondary"
+        className="font-[760]"
+        onClick={onAddTable}
+      >
+        <HugeiconsIcon icon={Add01Icon} size={17} />
+        <span className="hidden sm:inline">Masa ekle</span>
+      </Button>
+
+      <SelectMenu
+        renderTrigger={
+          <Button
+            size="square"
+            rounded="full"
+            color="ghost"
+            aria-label="Diğer işlemler"
+          >
+            <HugeiconsIcon icon={MoreVerticalIcon} size={18} />
+          </Button>
+        }
+        items={[
+          {
+            icon: <HugeiconsIcon icon={Download01Icon} size={18} />,
+            label: "Dışa aktar",
+            onSelect: () => setTransferMode("export"),
+          },
+          {
+            icon: <HugeiconsIcon icon={Upload01Icon} size={18} />,
+            label: "İçe aktar",
+            onSelect: () => setTransferMode("import"),
+          },
+          "divider",
+          {
+            icon: <HugeiconsIcon icon={ShuffleIcon} size={18} />,
+            label: "Rastgele Dağıt",
+            onSelect: onRandomDistribute,
+          },
+          "divider",
+          {
+            icon: <HugeiconsIcon icon={RefreshIcon} size={18} />,
+            label: "Sıfırla",
+            type: "danger",
+            onSelect: onReset,
+          },
+        ]}
+      />
 
       {transferMode && <DataTransferModal mode={transferMode} onClose={() => setTransferMode(null)} />}
     </section>
