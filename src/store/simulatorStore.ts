@@ -7,6 +7,7 @@ import type {
   GenderFilter,
   Person,
   PersonDraft,
+  PersonUpdateDraft,
   SimulatorExport,
   StatusFilter,
   Table,
@@ -21,7 +22,7 @@ type SimulatorState = {
   addPerson: (draft: PersonDraft) => void;
   addPeopleFromLines: (lines: string[]) => number;
   importPeopleFromText: (text: string) => number;
-  updatePerson: (personId: string, draft: PersonDraft) => void;
+  updatePerson: (personId: string, draft: PersonUpdateDraft) => void;
   deletePerson: (personId: string) => void;
   seatPerson: (personId: string, tableId: string) => boolean;
   removeFromTable: (personId: string) => void;
@@ -206,13 +207,20 @@ export const useSimulatorStore = create<SimulatorState>()(
         });
         return drafts.length;
       },
-      updatePerson: (personId, { name, gender }) => {
+      updatePerson: (personId, { name, gender, number }) => {
         const cleanName = name.trim();
         if (!cleanName) return;
+        const cleanNumber = Number(number);
+        if (!Number.isFinite(cleanNumber) || cleanNumber < 1) return;
         set((state) => ({
           people: state.people.map((person) =>
             person.id === personId
-              ? { ...person, name: cleanName, gender: normalizeGender(gender) }
+              ? {
+                  ...person,
+                  number: cleanNumber,
+                  name: cleanName,
+                  gender: normalizeGender(gender),
+                }
               : person,
           ),
         }));

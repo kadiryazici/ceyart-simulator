@@ -25,6 +25,10 @@ export type PersonDraft = {
   gender: Gender;
 };
 
+export type PersonUpdateDraft = PersonDraft & {
+  number: number;
+};
+
 export type SimulatorExport = {
   app: "ceyart-simulator";
   schemaVersion: 1;
