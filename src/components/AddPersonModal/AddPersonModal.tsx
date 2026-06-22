@@ -54,11 +54,11 @@ export function AddPersonModal(props: AddPersonModalProps) {
           </Button>
         </div>
         <label className="grid gap-2">
-          <span className="text-xs font-[700] text-slate-500">İsim</span>
+          <span className="text-sm font-[700] text-slate-500 lg:text-xs">İsim</span>
           <input className="field" value={name} onChange={(event) => setName(event.target.value)} placeholder="Kişi adı" autoFocus />
         </label>
         <div className="grid gap-2">
-          <span className="text-xs font-[700] text-slate-500">Cinsiyet</span>
+          <span className="text-sm font-[700] text-slate-500 lg:text-xs">Cinsiyet</span>
           <div className="grid grid-cols-2 rounded-2xl bg-slate-950/[0.04] p-1">
             {genderOptions.map((option) => (
               <Button
@@ -66,8 +66,8 @@ export function AddPersonModal(props: AddPersonModalProps) {
                 size="small"
                 className={cn(
                   gender === option
-                    ? "bg-white px-2 text-xs font-[700] text-slate-900 shadow-sm shadow-slate-950/[0.04]"
-                    : "border-transparent bg-transparent px-2 text-xs font-[650] text-slate-500 shadow-none hover:border-transparent hover:bg-slate-950/[0.04] hover:text-slate-700",
+                    ? "bg-white px-2 text-sm font-[700] text-slate-900 shadow-sm shadow-slate-950/[0.04] lg:text-xs"
+                    : "border-transparent bg-transparent px-2 text-sm font-[650] text-slate-500 shadow-none hover:border-transparent hover:bg-slate-950/[0.04] hover:text-slate-700 lg:text-xs",
                 )}
                 onClick={() => setGender(option)}
               >

@@ -16,25 +16,25 @@ export function CardActions(props: CardActionsProps) {
     <div
       {...attrs}
       className={cn(
-        "flex items-stretch divide-x divide-slate-950/10 overflow-hidden rounded-lg border border-slate-950/10 bg-white/95 text-xs shadow-md shadow-slate-950/15 backdrop-blur",
+        "flex items-stretch divide-x divide-slate-950/10 overflow-hidden rounded-lg border border-slate-950/10 bg-white/95 text-sm shadow-md shadow-slate-950/15 backdrop-blur lg:text-xs",
         className,
       )}
     >
       <button
         type="button"
-        className="flex h-6 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-950/[0.05] hover:text-slate-800"
+        className="flex h-8 w-8 items-center justify-center text-slate-500 transition hover:bg-slate-950/[0.05] hover:text-slate-800 lg:h-6 lg:w-7"
         title="Düzenle"
         onClick={onEdit}
       >
-        <HugeiconsIcon icon={Edit02Icon} size={13} />
+        <HugeiconsIcon icon={Edit02Icon} size={15} />
       </button>
       <button
         type="button"
-        className="flex h-6 w-7 items-center justify-center text-red-600 transition hover:bg-red-50 hover:text-red-700"
+        className="flex h-8 w-8 items-center justify-center text-red-600 transition hover:bg-red-50 hover:text-red-700 lg:h-6 lg:w-7"
         title="Sil"
         onClick={onDelete}
       >
-        <HugeiconsIcon icon={Delete02Icon} size={13} />
+        <HugeiconsIcon icon={Delete02Icon} size={15} />
       </button>
     </div>
   )

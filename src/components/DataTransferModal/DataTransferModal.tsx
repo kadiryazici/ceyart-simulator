@@ -65,12 +65,12 @@ export function DataTransferModal(props: DataTransferModalProps) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 id="data-transfer-title" className="text-lg font-[760]">{isExport ? "Dışa aktar" : "İçe aktar"}</h2>
-            <p className="mt-1 text-sm font-[520] text-slate-500">{isExport ? "Bu JSON'u kopyalayıp başka cihaza veya v1 uygulamasına taşıyabilirsin." : "JSON veya numara isim cinsiyet listesini buraya yapıştır."}</p>
+            <p className="mt-1 text-base font-[520] text-slate-500 lg:text-sm">{isExport ? "Bu JSON'u kopyalayıp başka cihaza veya v1 uygulamasına taşıyabilirsin." : "JSON veya numara isim cinsiyet listesini buraya yapıştır."}</p>
           </div>
           <Button size="square" onClick={onClose} aria-label="Kapat">×</Button>
         </div>
         <textarea
-          className="min-h-96 resize-y rounded-2xl border border-slate-950/10 bg-slate-950/[0.025] p-3 font-mono text-xs text-slate-900 outline-none transition focus:border-slate-950/20 focus:bg-white focus:ring-4 focus:ring-slate-950/[0.04]"
+          className="min-h-96 resize-y rounded-2xl border border-slate-950/10 bg-slate-950/[0.025] p-3 font-mono text-sm text-slate-900 outline-none transition focus:border-slate-950/20 focus:bg-white focus:ring-4 focus:ring-slate-950/[0.04] lg:text-xs"
           value={value}
           onChange={(event) => setValue(event.target.value)}
           readOnly={isExport}
@@ -78,7 +78,7 @@ export function DataTransferModal(props: DataTransferModalProps) {
           autoFocus
         />
         <div className="flex items-center justify-between gap-3">
-          <span className="text-sm font-[680] text-slate-500">{message}</span>
+          <span className="text-base font-[680] text-slate-500 lg:text-sm">{message}</span>
           <div className="flex gap-2">
             <Button onClick={onClose}>Kapat</Button>
             {isExport ? (

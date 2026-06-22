@@ -72,16 +72,16 @@ export function PersonRow(props: PersonRowProps) {
         <div className="flex items-center gap-3">
           <span
             className={cn(
-              "shrink-0 flex h-10 w-10 items-center justify-center rounded-full border border-slate-950/10 bg-slate-950/[0.04] text-sm font-[720] text-slate-600",
+              "shrink-0 flex h-10 w-10 items-center justify-center rounded-full border border-slate-950/10 bg-slate-950/[0.04] text-base font-[720] text-slate-600 lg:text-sm",
               person.tableId != null && "bg-green-200 text-green-900 border-green-300"
             )}>
             {person.number}
           </span>
 
           <div className={cn("grid min-w-0 gap-0.5")}>
-            <strong className="break-words text-sm font-[720] text-slate-900">{person.name}</strong>
-            <span className="text-xs font-[620] text-slate-500">{person.gender}</span>
-            <span className="break-words text-xs font-[680] text-slate-500">{statusText}</span>
+            <strong className="break-words text-base font-[720] text-slate-900 lg:text-sm">{person.name}</strong>
+            <span className="text-sm font-[620] text-slate-500 lg:text-xs">{person.gender}</span>
+            <span className="break-words text-sm font-[680] text-slate-500 lg:text-xs">{statusText}</span>
           </div>
         </div>
 

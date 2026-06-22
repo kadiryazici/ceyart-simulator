@@ -112,8 +112,8 @@ function PeoplePanelImpl(props: PeoplePanelImplProps) {
       <div className="sticky top-3 z-10 m-3 mb-0 grid gap-3 p-3 border-b border-b-slate-200">
         <div className="flex min-h-8 items-center justify-between gap-3">
           <div className="flex min-w-0 items-baseline gap-2">
-            <span className="text-[15px] font-[720] text-slate-900">Kişiler</span>
-            <span className="text-xs font-[700] text-slate-500">({filteredPeople.length})</span>
+            <span className="text-base font-[720] text-slate-900 lg:text-[15px]">Kişiler</span>
+            <span className="text-sm font-[700] text-slate-500 lg:text-xs">({filteredPeople.length})</span>
           </div>
           <div className="flex items-center gap-2">
             <SelectMenu
@@ -156,7 +156,7 @@ function PeoplePanelImpl(props: PeoplePanelImplProps) {
             </Fragment>
           ))
         ) : (
-          <p className="py-8 text-center text-sm font-medium text-slate-500">Kişi bulunamadı.</p>
+          <p className="py-8 text-center text-base font-medium text-slate-500 lg:text-sm">Kişi bulunamadı.</p>
         )}
       </div>
       {isAddPersonOpen ? <AddPersonModal onClose={() => setIsAddPersonOpen(false)} /> : null}

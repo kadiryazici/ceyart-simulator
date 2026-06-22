@@ -23,7 +23,7 @@ export function SearchInput(props: SearchInputProps) {
       <HugeiconsIcon icon={Search01Icon} size={17} className="text-slate-400" />
       <input
         {...attrs}
-        className="min-w-0 bg-transparent text-sm font-[560] text-slate-900 outline-none placeholder:text-slate-400"
+        className="min-w-0 bg-transparent text-base font-[560] text-slate-900 outline-none placeholder:text-slate-400 lg:text-sm"
         onChange={(event) => onValueChange(event.target.value)}
         placeholder={placeholder}
         type="search"

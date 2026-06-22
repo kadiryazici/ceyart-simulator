@@ -19,23 +19,23 @@
 
 @layer components {
   .field {
-    @apply min-h-10 rounded-xl border border-slate-950/10 bg-white/80 px-3 text-sm font-[520] text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] outline-none transition placeholder:text-slate-400 hover:border-slate-950/15 focus:border-slate-950/20 focus:bg-white focus:ring-4 focus:ring-slate-950/[0.04];
+    @apply min-h-10 rounded-xl border border-slate-950/10 bg-white/80 px-3 text-base font-[520] text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] outline-none transition placeholder:text-slate-400 hover:border-slate-950/15 focus:border-slate-950/20 focus:bg-white focus:ring-4 focus:ring-slate-950/[0.04] lg:text-sm;
   }
 
   .btn {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-950/10 bg-white/70 px-3.5 text-sm font-[650] text-slate-700 shadow-sm shadow-slate-950/[0.03] transition hover:border-slate-950/15 hover:bg-white active:scale-[0.99];
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-950/10 bg-white/70 px-3.5 text-base font-[650] text-slate-700 shadow-sm shadow-slate-950/[0.03] transition hover:border-slate-950/15 hover:bg-white active:scale-[0.99] lg:text-sm;
   }
 
   .btn-primary {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-950 px-3.5 text-sm font-[650] text-white shadow-sm shadow-slate-950/15 transition hover:bg-slate-800 active:scale-[0.99];
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-900 bg-slate-950 px-3.5 text-base font-[650] text-white shadow-sm shadow-slate-950/15 transition hover:bg-slate-800 active:scale-[0.99] lg:text-sm;
   }
 
   .chip-action {
-    @apply inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-[720] text-slate-700 transition hover:bg-slate-950/[0.05] hover:text-slate-950 active:scale-[0.98];
+    @apply inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full px-3 text-base font-[720] text-slate-700 transition hover:bg-slate-950/[0.05] hover:text-slate-950 active:scale-[0.98] lg:text-sm;
   }
 
   .chip-action-primary {
-    @apply inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full bg-slate-950 px-3 text-sm font-[760] text-white shadow-sm shadow-slate-950/15 transition hover:bg-slate-800 active:scale-[0.98];
+    @apply inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full bg-slate-950 px-3 text-base font-[760] text-white shadow-sm shadow-slate-950/15 transition hover:bg-slate-800 active:scale-[0.98] lg:text-sm;
   }
 
   .chip-icon {
@@ -47,15 +47,15 @@
   }
 
   .btn-danger {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-200/80 bg-red-50/90 px-3.5 text-sm font-[650] text-red-700 transition hover:bg-red-100;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-200/80 bg-red-50/90 px-3.5 text-base font-[650] text-red-700 transition hover:bg-red-100 lg:text-sm;
   }
 
   .segment {
-    @apply min-h-9 rounded-xl border border-transparent bg-transparent px-2 text-xs font-[650] text-slate-500 transition hover:bg-slate-950/[0.04] hover:text-slate-700;
+    @apply min-h-9 rounded-xl border border-transparent bg-transparent px-2 text-sm font-[650] text-slate-500 transition hover:bg-slate-950/[0.04] hover:text-slate-700 lg:text-xs;
   }
 
   .segment-active {
-    @apply min-h-9 rounded-xl border border-slate-950/10 bg-white px-2 text-xs font-[700] text-slate-900 shadow-sm shadow-slate-950/[0.04];
+    @apply min-h-9 rounded-xl border border-slate-950/10 bg-white px-2 text-sm font-[700] text-slate-900 shadow-sm shadow-slate-950/[0.04] lg:text-xs;
   }
 
   .check {
@@ -79,7 +79,7 @@
   }
 
   .menu-item {
-    @apply flex min-h-10 cursor-default select-none items-center gap-2 rounded-xl px-3 text-sm font-[650] text-slate-700 outline-none data-[highlighted]:bg-slate-950/[0.05];
+    @apply flex min-h-10 cursor-default select-none items-center gap-2 rounded-xl px-3 text-base font-[650] text-slate-700 outline-none data-[highlighted]:bg-slate-950/[0.05] lg:text-sm;
   }
 
   .menu-separator {

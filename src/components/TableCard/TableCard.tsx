@@ -43,8 +43,8 @@ export function TableCard(props: TableCardProps) {
       }}
     >
       <div className="flex flex-row justify-start items-center gap-2 border-b border-slate-950/10 bg-slate-950/[0.02] px-4 py-3.5">
-        <input className="min-w-0 mr-auto bg-transparent text-[15px] font-[720] text-slate-900 outline-none" value={table.name} onClick={(event) => event.stopPropagation()} onChange={(event) => updateTableName(table.id, event.target.value)} />
-        <span className="rounded-full border border-slate-950/10 bg-white px-2.5 py-1 text-xs font-[700] text-slate-600 shadow-sm shadow-slate-950/[0.03]">{seated.length}</span>
+        <input className="min-w-0 mr-auto bg-transparent text-base font-[720] text-slate-900 outline-none lg:text-[15px]" value={table.name} onClick={(event) => event.stopPropagation()} onChange={(event) => updateTableName(table.id, event.target.value)} />
+        <span className="rounded-full border border-slate-950/10 bg-white px-2.5 py-1 text-sm font-[700] text-slate-600 shadow-sm shadow-slate-950/[0.03] lg:text-xs">{seated.length}</span>
         <SelectMenu
           renderTrigger={
             <Button size="square" color="ghost" className="p-2" aria-label="Daha fazla seçenek">
@@ -93,8 +93,8 @@ export function TableCard(props: TableCardProps) {
                 event.dataTransfer.setData("text/plain", person.id)
               }}
             >
-              <strong className="flex flex-row gap-2 items-center break-words text-sm font-[700] text-slate-900">
-                <span className="size-6 shrink-0 flex items-center justify-center rounded-full bg-slate-950/[0.1] px-2 text-xs font-[700] text-slate-600">{person.number}</span>
+              <strong className="flex flex-row gap-2 items-center break-words text-base font-[700] text-slate-900 lg:text-sm">
+                <span className="size-6 shrink-0 flex items-center justify-center rounded-full bg-slate-950/[0.1] px-2 text-sm font-[700] text-slate-600 lg:text-xs">{person.number}</span>
                 <span>{person.name}</span>
               </strong>
               <Button className="size-fit p-2 opacity-100 lg:opacity-0 lg:group-hover/TableRow:opacity-100" size="square" color="danger" title="Masadan al" onClick={(event) => { event.stopPropagation(); removeFromTable(person.id); }}>
@@ -103,7 +103,7 @@ export function TableCard(props: TableCardProps) {
             </li>
           ))
         ) : (
-          <li className="py-10 text-center text-sm font-[560] text-slate-400">Boş</li>
+          <li className="py-10 text-center text-base font-[560] text-slate-400 lg:text-sm">Boş</li>
         )}
       </ul>
     </article>

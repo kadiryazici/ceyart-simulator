@@ -15,8 +15,8 @@ const baseClassName =
   "inline-flex items-center justify-center border shadow-sm transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
 
 const sizeClassNames: Record<ButtonSize, string> = {
-  normal: "min-h-10 gap-2 px-3.5 text-sm font-[650]",
-  small: "min-h-9 gap-1.5 px-3 text-sm font-[720]",
+  normal: "min-h-10 gap-2 px-3.5 text-base font-[650] lg:text-sm",
+  small: "min-h-9 gap-1.5 px-3 text-base font-[720] lg:text-sm",
   square: "h-9 w-9 text-slate-500",
 }
 

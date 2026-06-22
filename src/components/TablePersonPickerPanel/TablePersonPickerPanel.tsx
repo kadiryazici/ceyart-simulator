@@ -30,8 +30,8 @@ export function TablePersonPickerPanel(props: TablePersonPickerPanelProps) {
     >
       <div className="sticky top-3 z-10 m-3 mb-0 grid gap-3 border-b border-b-slate-200 p-3">
         <div className="grid gap-1">
-          <span className="text-[15px] font-[720] text-slate-900">Kişi ekle</span>
-          <span className="text-xs font-[700] text-slate-500">{tableName}</span>
+          <span className="text-base font-[720] text-slate-900 lg:text-[15px]">Kişi ekle</span>
+          <span className="text-sm font-[700] text-slate-500 lg:text-xs">{tableName}</span>
         </div>
         <SearchInput value={query} onValueChange={setQuery} />
       </div>
@@ -51,7 +51,7 @@ export function TablePersonPickerPanel(props: TablePersonPickerPanelProps) {
             </div>
           ))
         ) : (
-          <p className="py-8 text-center text-sm font-medium text-slate-500">Kişi bulunamadı.</p>
+          <p className="py-8 text-center text-base font-medium text-slate-500 lg:text-sm">Kişi bulunamadı.</p>
         )}
       </div>
     </aside>

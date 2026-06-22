@@ -38,19 +38,19 @@ export function BulkAddModal(props: BulkAddModalProps) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 id="bulk-add-title" className="text-lg font-bold">Listeden ekle</h2>
-            <p className="mt-1 text-sm font-medium text-slate-500">Her satır yeni bir katılımcı olarak eklenir. Cinsiyet için: İsim - Kadın/Erkek.</p>
+            <p className="mt-1 text-base font-medium text-slate-500 lg:text-sm">Her satır yeni bir katılımcı olarak eklenir. Cinsiyet için: İsim - Kadın/Erkek.</p>
           </div>
           <Button size="square" onClick={onClose} aria-label="Kapat">×</Button>
         </div>
         <textarea
-          className="min-h-72 resize-y rounded-lg border border-slate-300 bg-white p-3 text-sm font-medium text-slate-900 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+          className="min-h-72 resize-y rounded-lg border border-slate-300 bg-white p-3 text-base font-medium text-slate-900 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100 lg:text-sm"
           value={value}
           onChange={(event) => setValue(event.target.value)}
           placeholder={"Elif Arslan - Kadın\nKadir Yazıcı - Erkek\nZeynep X"}
           autoFocus
         />
         <div className="flex items-center justify-between gap-3">
-          <span className="text-sm font-bold text-slate-500">{candidateCount} kişi eklenecek</span>
+          <span className="text-base font-bold text-slate-500 lg:text-sm">{candidateCount} kişi eklenecek</span>
           <div className="flex gap-2">
             <Button onClick={onClose}>Vazgeç</Button>
             <Button type="submit" color="primary" disabled={!candidateCount}>Ekle</Button>

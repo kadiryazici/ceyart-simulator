@@ -22,7 +22,7 @@ export function EmptyState(props: EmptyStateProps) {
         <HugeiconsIcon icon={DiningTableIcon} size={42} strokeWidth={1.7} />
       </div>
       <h2 className="text-xl font-[760] text-slate-900">Henüz masa yok</h2>
-      <p className="mt-2 text-sm font-[520] leading-6 text-slate-500">
+      <p className="mt-2 text-base font-[520] leading-7 text-slate-500 lg:text-sm lg:leading-6">
         Yerleşime başlamak için ilk masayı ekle. Kişileri sol panelden seçip masaya taşıyabilirsin.
       </p>
       <Button color="primary" className="mt-5" onClick={addTable}>

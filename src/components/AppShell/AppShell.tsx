@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import type { ComponentProps } from "react"
 import { Drawer } from "@base-ui/react/drawer"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -28,8 +28,24 @@ export function AppShell(props: AppShellProps) {
   const randomDistribute = useSimulatorStore((state) => state.randomDistribute)
   const seatPerson = useSimulatorStore((state) => state.seatPerson)
   const people = useSimulatorStore((state) => state.people)
+  const tablesScrollRef = useRef<HTMLDivElement>(null)
   const [isPeopleDrawerOpen, setIsPeopleDrawerOpen] = useState(false)
   const [personPickerTableId, setPersonPickerTableId] = useState<string | null>(null)
+
+  const handleAddTable = () => {
+    addTable()
+
+    requestAnimationFrame(() => {
+      const scrollElement = tablesScrollRef.current
+
+      if (!scrollElement) return
+
+      scrollElement.scrollTo({
+        top: scrollElement.scrollHeight,
+        behavior: "smooth",
+      })
+    })
+  }
 
   const handleRandom = () => {
     randomDistribute()
@@ -55,7 +71,7 @@ export function AppShell(props: AppShellProps) {
       className={cn("flex h-dvh overflow-hidden bg-gray-100 text-slate-900 lg:h-screen lg:grid-cols-[392px_1fr]", className)}
     >
       <PeoplePanel
-        className="w-[400px] shrink-0"
+        className="lg:w-[400px] shrink-0"
         open={isPeopleDrawerOpen}
         onOpenChange={setIsPeopleDrawerOpen}
       />
@@ -71,7 +87,10 @@ export function AppShell(props: AppShellProps) {
       />
 
       <div className="relative grid *:min-h-0 size-full overflow-hidden">
-        <div className="size-full flex items-start *:shrink-0 shrink overflow-y-auto px-3 pb-28 pt-4 sm:px-5 lg:px-6 lg:pt-6">
+        <div
+          ref={tablesScrollRef}
+          className="size-full flex items-start *:shrink-0 shrink overflow-y-auto px-3 pb-28 pt-4 sm:px-5 lg:px-6 lg:pt-6"
+        >
           <TablesPanel
             className="w-full min-h-full"
             onPersonPickerOpen={setPersonPickerTableId}
@@ -79,7 +98,7 @@ export function AppShell(props: AppShellProps) {
         </div>
 
         <AppControlBar
-          onAddTable={addTable}
+          onAddTable={handleAddTable}
           onPeopleOpen={() => setIsPeopleDrawerOpen(true)}
           onRandomDistribute={handleRandom}
           onReset={handleReset}
@@ -135,6 +154,7 @@ function AppControlBar(props: AppControlBarProps) {
         rounded="full"
         color="secondary"
         className="font-[760]"
+        aria-label="Masa ekle"
         onClick={onAddTable}
       >
         <HugeiconsIcon icon={Add01Icon} size={17} />
