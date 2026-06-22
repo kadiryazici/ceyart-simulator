@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  base: "/ceyart-simulator/",
+  base: "/meeplio/",
   plugins: [
     react(),
     tailwindcss(),
@@ -13,30 +13,30 @@ export default defineConfig({
       injectRegister: "auto",
       includeAssets: ["app-icon.svg", "app-icon-192.png", "app-icon-512.png"],
       manifest: {
-        name: "Ceyart Simulator",
-        short_name: "Ceyart",
+        name: "Meeplio",
+        short_name: "Meeplio",
         description: "Offline masa yerlesim simulatoru",
         theme_color: "#f3f4f6",
         background_color: "#f3f4f6",
         display: "standalone",
         orientation: "portrait",
-        scope: "/ceyart-simulator/",
-        start_url: "/ceyart-simulator/",
+        scope: "/meeplio/",
+        start_url: "/meeplio/",
         icons: [
           {
-            src: "/ceyart-simulator/app-icon-192.png",
+            src: "/meeplio/app-icon-192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any maskable",
           },
           {
-            src: "/ceyart-simulator/app-icon-512.png",
+            src: "/meeplio/app-icon-512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
           },
           {
-            src: "/ceyart-simulator/app-icon.svg",
+            src: "/meeplio/app-icon.svg",
             sizes: "any",
             type: "image/svg+xml",
             purpose: "any maskable",
@@ -46,7 +46,7 @@ export default defineConfig({
       workbox: {
         cleanupOutdatedCaches: true,
         globPatterns: ["**/*.{js,css,html,svg,png,ico,webmanifest}"],
-        navigateFallback: "/ceyart-simulator/index.html",
+        navigateFallback: "/meeplio/index.html",
       },
     }),
   ],

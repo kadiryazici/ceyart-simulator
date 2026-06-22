@@ -30,7 +30,7 @@ export type PersonUpdateDraft = PersonDraft & {
 };
 
 export type SimulatorExport = {
-  app: "ceyart-simulator";
+  app: "meeplio";
   schemaVersion: 1;
   exportedAt: string;
   people: Person[];

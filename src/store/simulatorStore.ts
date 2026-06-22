@@ -216,11 +216,11 @@ export const useSimulatorStore = create<SimulatorState>()(
           people: state.people.map((person) =>
             person.id === personId
               ? {
-                  ...person,
-                  number: cleanNumber,
-                  name: cleanName,
-                  gender: normalizeGender(gender),
-                }
+                ...person,
+                number: cleanNumber,
+                name: cleanName,
+                gender: normalizeGender(gender),
+              }
               : person,
           ),
         }));
@@ -307,7 +307,7 @@ export const useSimulatorStore = create<SimulatorState>()(
       exportState: () => {
         const state = get();
         return {
-          app: "ceyart-simulator",
+          app: "meeplio",
           schemaVersion: 1,
           exportedAt: new Date().toISOString(),
           people: state.people,
@@ -366,7 +366,7 @@ export const useSimulatorStore = create<SimulatorState>()(
         }),
     }),
     {
-      name: "ceyart-simulator-state-v2",
+      name: "meeplio-state-v2",
       version: 2,
       partialize: (state) => ({
         people: state.people,
