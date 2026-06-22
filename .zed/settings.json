@@ -19,21 +19,16 @@
     },
   },
   "lsp": {
-    // Non-relative import specifiers, matching js/ts.preferences.importModuleSpecifier
-    "tsgo": {
-      "settings": {
-        "typescript": {
-          "preferences": {
-            "importModuleSpecifier": "non-relative",
-          },
-        },
-        "javascript": {
-          "preferences": {
-            "importModuleSpecifier": "non-relative",
-          },
-        },
-      },
-    },
+    "typescript-language-server": {
+         "initialization_options": {
+           "preferences": {
+             "importModuleSpecifier": "non-relative",
+             "includeInlayParameterNameHints": "literals",
+             "includeInlayParameterNameHintsWhenArgumentMatchesName": false
+           }
+         }
+       }
+     },
     // Tailwind class detection in cva/cn/clsx etc.
     "tailwindcss-language-server": {
       "settings": {
